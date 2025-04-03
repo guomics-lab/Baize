@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plasma Contamination Index Calculation System</title>
+    <link rel="icon" href="https://guomics.com/wp-content/themes/guomics/img/logo-2.png">
+    <link rel="stylesheet" href="/Baize/static/css/tailwind.min.css">
+    <link rel="stylesheet" href="/Baize/static/css/all.min.css">
+    <script src="/Baize/static/css/tailwind.css"></script>
+
+    <!--<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>-->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#6B7280'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '2px',
+                        DEFAULT: '4px',
+                        'md': '8px',
+                        'lg': '12px',
+                        'xl': '16px',
+                        '2xl': '20px',
+                        '3xl': '24px',
+                        'full': '9999px',
+                        'button': '4px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            min-height: 1024px;
+            background-color: #F9FAFB;
+        }
+        .file-input::-webkit-file-upload-button {
+            display: none;
+        }
+        .file-input::file-selector-button {
+            display: none;
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D1D5DB;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+        input[type="checkbox"]:checked::after {
+            content: '\2714';
+            font-size: 14px;
+            color: white;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center min-h-screen">
+<header class="w-full bg-white shadow-sm">
+    <div class="max-w-[1440px] mx-auto px-8 py-4 flex items-center">
+        <img class="max-w-[100px]" src="/OmniProt/static/logo.png" alt=""></img>
+<!--        <h1 class="text-2xl font-['Pacifico'] text-primary">logo</h1>-->
+<!--        <nav class="ml-12 align-center">-->
+<!--            <a href="#" class="text-primary hover:text-primary px-4 py-2">OmniProt Plasma/Serum Contamination Index</a>-->
+<!--        </nav>-->
+    </div>
+</header>
+
+<main class="w-full max-w-[1440px] px-8 py-12">
+    <div class="bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-medium text-gray-900 mb-8">OmniProt Plasma/Serum Contamination Index</h2>
+
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Sample Information</label>
+                <div class="relative">
+                    <input type="file" accept=".xlsx,.csv,.tsv" class="file-input hidden" id="sampleFile">
+                    <div class="flex items-center">
+                        <button onclick="document.getElementById('sampleFile').click()" class="!rounded-button px-4 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            <i class="fas fa-upload mr-2"></i>Select File
+                        </button>
+                        <span class="ml-3 text-sm text-gray-500" id="sampleFileName">No file selected</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
+                <a href="/Baize/demoSample" class="inline-block mt-1 text-sm text-primary hover:underline">
+                    <i class="fas fa-download mr-1"></i>Download Example Files
+                </a>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Protein Matrix </label>
+                <div class="relative">
+                    <input type="file" accept=".xlsx,.csv,.tsv" class="file-input hidden" id="proteinFile">
+                    <div class="flex items-center">
+                        <button onclick="document.getElementById('proteinFile').click()" class="!rounded-button px-4 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            <i class="fas fa-upload mr-2"></i>Select File
+                        </button>
+                        <span class="ml-3 text-sm text-gray-500" id="proteinFileName">No file selected</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
+                <a href="/Baize/demoMatrix" class="inline-block mt-1 text-sm text-primary hover:underline">
+                    <i class="fas fa-download mr-1"></i>Download Example Files
+                </a>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Contamination Type</label>
+                <div class="flex space-x-6">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" value="platelet" id="platelet">
+                        <span class="text-sm text-gray-700">Platelet</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" value="rbc" id="rbc">
+                        <span class="text-sm text-gray-700">Erythrocyte</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" value="coagulation" id="coagulation">
+                        <span class="text-sm text-gray-700">Coagulation</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Uniprot ID column</label>
+                    <input id="UniprotIDColumnName" type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Please enter Uniprot ID column name">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Gene Name column</label>
+                    <input id="GeneColumnName" type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Please enter the gene name">
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button class="w-full !rounded-button px-6 py-3 bg-primary text-white hover:bg-primary/90 whitespace-nowrap" id="startCalc">
+                    Run Analysis
+                </button>
+            </div>
+        </div>
+        <div class="mt-8 border-t pt-8 hidden" id="resultSection">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Analysis Summary</h3>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="space-y-6">
+                    <div class="bg-white rounded shadow-sm p-4 hidden" id="plateletImgDiv">
+                        Platelet contamination index
+                        <img id="plateletImg" src="" alt="" class="w-full h-auto object-contain">
+                    </div>
+                    <div class="bg-white rounded shadow-sm p-4 hidden" id="rbcImgDiv">
+                        Erythrocyte contamination index
+                        <img id="rbcImg" src="" alt="" class="w-full h-auto object-contain">
+                    </div>
+                    <div class="bg-white rounded shadow-sm p-4 hidden" id="coagulationImgDiv">
+                        Coagulation contamination index
+                        <img id="coagulationImg" src="" alt="" class="w-full h-auto object-contain">
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button class="!rounded-button px-4 py-2 bg-primary text-white hover:bg-primary/90 whitespace-nowrap" id="downFileBtn">
+                        <i class="fas fa-download mr-2"></i>Download Full Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="w-full bg-white border-t">
+    <div class="max-w-[1440px] mx-auto px-8 py-6">
+        <div class="text-center text-sm text-gray-500">
+            Publication
+            <br>
+            Systematic evaluation and minimization of blood contamination in nanoparticle-based plasma proteomics
+        </div>
+    </div>
+</footer>
+
+<script>
+
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var random = Math.random() * 16 | 0;
+            var value = (c === 'x' ? random : (random & 0x3 | 0x8));
+            return value.toString(16);
+        });
+    }
+
+    var pageUUID = generateUUID();
+    // pageUUID = '2739256b-6567-498e-b28f-175c1e7ef072'
+
+    document.getElementById('sampleFile').addEventListener('change', function(e) {
+        document.getElementById('sampleFileName').textContent = 'File upload in progress'
+        const file = event.target.files[0]; // 获取第一个选中的文件
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file); // 将文件添加到FormData对象中
+            formData.append('pageUUID', pageUUID);
+
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Baize/uploadSample', true); // 设置请求类型和URL
+            // 如果需要手动设置boundary，可以使用以下代码：
+            // xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + formData.getBoundary());
+            xhr.onload = function() {
+                if (this.status >= 200 && this.status < 300) {
+                    if(this.responseText == '文件上传成功'){
+                        document.getElementById('sampleFileName').textContent = e.target.files[0]?.name
+                    }else {
+                        document.getElementById('sampleFileName').textContent = 'File upload failed'
+                    }
+                } else {
+                    console.error('Upload failed'); // 处理上传失败的情况
+                    alert('Upload failed');
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Request failed'); // 处理请求错误的情况
+                alert('Request failed');
+            };
+            xhr.send(formData); // 发送请求
+        }
+    });
+
+    document.getElementById('proteinFile').addEventListener('change', function(e) {
+        // document.getElementById('proteinFileName').textContent = e.target.files[0]?.name || '未选择文件';
+        const file = event.target.files[0]; // 获取第一个选中的文件
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file); // 将文件添加到FormData对象中
+            formData.append('pageUUID', pageUUID);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Baize/uploadProtein', true); // 设置请求类型和URL
+            // 如果需要手动设置boundary，可以使用以下代码：
+            // xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + formData.getBoundary());
+            xhr.onload = function() {
+                if (this.status >= 200 && this.status < 300) {
+                    if(this.responseText == '文件上传成功'){
+                        document.getElementById('proteinFileName').textContent = e.target.files[0]?.name
+                    }else {
+                        document.getElementById('proteinFileName').textContent = 'File upload failed'
+                    }
+                } else {
+                    console.error('Upload failed'); // 处理上传失败的情况
+                    alert('Upload failed');
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Request failed'); // 处理请求错误的情况
+                alert('Request failed');
+            };
+            xhr.send(formData); // 发送请求
+        }
+    });
+
+    document.getElementById('startCalc').addEventListener('click', function(e) {
+        var proteinFileName = document.getElementById('proteinFileName').textContent
+        var sampleFileName = document.getElementById('sampleFileName').textContent
+        // pageUUID
+        var uniprotIDColumnName = document.getElementById('UniprotIDColumnName').value
+        var geneColumnName = document.getElementById('GeneColumnName').value
+
+        var plateletCheckbox = document.getElementById("platelet");
+        var isPlateletChecked = plateletCheckbox.checked;
+        var rbcCheckbox = document.getElementById("rbc");
+        var isRbcChecked = rbcCheckbox.checked;
+        var coagulationCheckbox = document.getElementById("coagulation");
+        var isCoagulationChecked = coagulationCheckbox.checked;
+
+        console.log(proteinFileName)
+        console.log(sampleFileName)
+        console.log(pageUUID)
+        console.log(uniprotIDColumnName)
+        console.log(geneColumnName)
+        console.log(isPlateletChecked)
+        console.log(isRbcChecked)
+        console.log(isCoagulationChecked)
+
+        const formData = new FormData();
+        formData.append('pageUUID', pageUUID);
+        formData.append('proteinFileName', proteinFileName);
+        formData.append('sampleFileName', sampleFileName);
+        formData.append('uniprotIDColumnName', uniprotIDColumnName);
+        formData.append('geneColumnName', geneColumnName);
+        formData.append('isPlateletChecked', isPlateletChecked);
+        formData.append('isRbcChecked', isRbcChecked);
+        formData.append('isCoagulationChecked', isCoagulationChecked);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Baize/calc', true); // 设置请求类型和URL
+        xhr.onload = function() {
+            document.getElementById('startCalc').disabled = false;
+            document.getElementById('startCalc').textContent = 'Compute';
+            if (this.status >= 200 && this.status < 300) {
+
+                if (this.responseText == '计算完成') {
+                    //打开预览页面
+                    document.getElementById('resultSection').classList.remove('hidden');
+
+                    if(isPlateletChecked){
+                        var plateletImgEl = document.getElementById('plateletImg')
+                        var plateletImgDivEl = document.getElementById('plateletImgDiv')
+                        plateletImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=platelet";
+                        plateletImgDivEl.classList.remove('hidden');
+                    }
+                    if(isRbcChecked){
+                        console.log('------------------', isRbcChecked)
+                        // document.getElementById('rbcImg').removeAttribute('hidden');
+                        var rbcImgEl = document.getElementById('rbcImg')
+                        var rbcImgDivEl = document.getElementById('rbcImgDiv')
+                        rbcImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=rbc";
+                        rbcImgDivEl.classList.remove('hidden');
+                    }
+                    if(isCoagulationChecked){
+                        console.log('------------------', isCoagulationChecked)
+                        // document.getElementById('coagulationImg').removeAttribute('hidden');
+                        var coagulationImgEl = document.getElementById('coagulationImg')
+                        var coagulationImgDivEl = document.getElementById('coagulationImgDiv')
+                        coagulationImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=coagulation";
+                        coagulationImgDivEl.classList.remove('hidden');
+                    }
+                }else {
+                    alert(this.responseText);
+                }
+            } else {
+                console.error('Calc failed'); // 处理上传失败的情况
+                alert('Calc failed');
+            }
+        };
+        xhr.onerror = function() {
+            document.getElementById('startCalc').disabled = false;
+            document.getElementById('startCalc').textContent = 'Compute';
+            console.error('Request failed'); // 处理请求错误的情况
+            alert('Request failed');
+        };
+        document.getElementById('startCalc').disabled = true;
+        document.getElementById('startCalc').textContent = 'Calculating';
+
+        //页面都隐藏了
+        document.getElementById('resultSection').classList.add('hidden');
+        var plateletImgDivEl = document.getElementById('plateletImgDiv')
+        plateletImgDivEl.classList.add('hidden');
+        var rbcImgDivEl = document.getElementById('rbcImgDiv')
+        rbcImgDivEl.classList.add('hidden');
+        var coagulationImgDivEl = document.getElementById('coagulationImgDiv')
+        coagulationImgDivEl.classList.add('hidden');
+
+
+        xhr.send(formData); // 发送请求
+    });
+
+    document.getElementById('downFileBtn').addEventListener('click', function(e) {
+        window.open('/Baize/downFile?pageUUID=' + pageUUID);
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Baize, a web-based software tool for rapid evaluation of sample contamination in three critical dimensions: platelet contamination, erythrocyte lysis, and residual coagulation protein carryover. The algorithm calculates cell-type-specific contamination indices by normalizing the summed intensity of marker proteins against the total intensity of plasma proteome (Contamination Index = Marker Protein Intensities / Σ All Plasma Protein Intensities). Users can submit a protein matrix with a sample annotation table, and then Baize will output an evaluation of contamination for every plasma sample. Baize is freely accessible at https://www.guomics.com/Baize.
+
+### Output
+The output provides each sample contamination profile, enabling rapid quality control decisions without requiring manual intervention.
