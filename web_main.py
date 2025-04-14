@@ -1,10 +1,6 @@
 from flask import Flask
 
 from src.baize.baize_router import baize_bp
-from src.dia_bert.dia_bert_router import dia_bert_bp
-from src.dda_bert.dda_bert_router import dda_bert_bp
-from src.massnet.massnet_router import massnet_bp
-from src.meta_expert_pro.meta_expert_pro_router import meta_expert_pro_bp
 
 
 

@@ -74,7 +74,7 @@ def upload_sample():
                 os.makedirs(save_dir)
 
             file.save(os.path.join(save_dir, filename))
-            return '文件上传成功'
+            return 'File successfully uploaded'
         return 'The file type does not meet the requirements'
     except Exception as e:
         logger.exception(f'upload_sample error:')
@@ -100,7 +100,7 @@ def upload_protein():
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             file.save(os.path.join(save_dir, save_filename))
-            return '文件上传成功'
+            return 'File successfully uploaded'
         return 'The file type does not meet the requirements'
     except Exception as e:
         logger.exception(f'upload_protein error:')
@@ -145,7 +145,7 @@ def calc():
             containmination_index_calculation.main(each_base_save_dir, pg_matrix, sampleinfo, contaminationType,
                                                    uniprotIDColumnName, geneColumnName)
 
-            return '计算完成'
+            return 'File calculation completed'
         except Exception as e:
             logger.exception(f'containmination_index_calculation error:')
             return 'Calculate error'
