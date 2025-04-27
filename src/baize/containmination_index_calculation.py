@@ -92,7 +92,6 @@ def plot_dataframe(df, outfile_prefix, title='', width=1, color="blue"):
     return fig
 
 
-
 def main(base_save_dir, pg_matrix, sampleinfo, contaminationType, uniprot, gene):
     font = FontProperties(family='Arial')
     plt.rcParams['font.family'] = font.get_name()
