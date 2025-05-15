@@ -1,0 +1,7 @@
+flask
+matplotlib
+scipy
+pandas
+loguru
+seaborn
+openpyxl
