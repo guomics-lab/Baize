@@ -6,3 +6,30 @@ Baize, a web-based software tool for rapid evaluation of sample contamination in
 
 ### Output
 The output provides each sample contamination profile, enabling rapid quality control decisions without requiring manual intervention.
+
+## Installation
+If you want to use Baize by source code, you can install python and install requirements package.
+
+### Prerequisites
+Please make sure you have a valid installation of conda or miniconda. We recommend setting up miniconda as described on their website.
+
+```shell
+git clone https://github.com/guomics-lab/Baize.git
+cd Baize
+```
+
+```shell
+conda create -n Baize python=3.9
+conda activate Baize
+```
+
+```shell
+pip install -r requirements.txt
+```
+
+Run
+```shell
+python web_main.py
+```
+
+Open your browser and go to http://127.0.0.1:5000/Baize
