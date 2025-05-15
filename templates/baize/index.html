@@ -72,8 +72,8 @@
 <body class="flex flex-col items-center min-h-screen">
 
 <main class="w-full max-w-[1440px] px-8 py-12">
-    <div class="bg-white rounded-lg shadow-sm p-8 max-w-3xl mx-auto">
-        <h2 class="text-2xl font-medium text-gray-900 mb-8">Baize Plasma/Serum Contamination Index</h2>
+    <div class="bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
+        <h2 class="text-2xl font-medium text-gray-900 mb-8">Baize Plasma and Serum Contamination Assessment Tool (v2.0)</h2>
 
         <div class="space-y-6">
             <div class="space-y-2">
@@ -140,7 +140,7 @@
             </div>
 
             <div class="pt-4">
-                <button class="w-full !rounded-button px-6 py-3 bg-primary text-white hover:bg-primary/90 whitespace-nowrap" id="startCalc">
+                <button class="w-full !rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap" id="startCalc">
                     Run Analysis
                 </button>
             </div>
@@ -174,16 +174,22 @@
 
 <footer class="w-full bg-white border-t">
     <div class="max-w-[1440px] mx-auto px-8 py-12">
-        <div class="max-w-3xl mx-auto text-left text-sm text-gray-500 space-y-2">
-            <p class="text-xl font-bold">Key publication</p>
-            <p>Please cite:</p>
-            <p>Systematic evaluation of blood contamination in nanoparticle-based plasma proteomics</p>
-
+        <div class="max-w-3xl mx-auto text-left text-sm text-gray-500 space-y-2 py-6">
+            <p class="text-xl font-bold">Baize Offline Version Access</p>
+            <p>The Baize software is now available as an open-source solution.
+                To implement an offline version, download the latest release scripts and associated documentation
+                from our official GitHub repository:
+                <a href="https://github.com/guomics-lab/Baize" target="_blank" class="inline-block mt-1 text-sm text-primary hover:underline">https://github.com/guomics-lab/Baize</a></p>
             <div class="text-center pt-4">
-                <a href="https://github.com/guomics-lab/Baize" target="_blank" class="!rounded-button px-6 py-3 bg-primary text-white hover:bg-primary/90 whitespace-nowrap cursor-pointer">
+                <a href="https://github.com/guomics-lab/Baize" target="_blank" class="!rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap cursor-pointer">
                     View on Github
                 </a>
             </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto text-left text-sm text-gray-500 space-y-2">
+            <p class="text-xl font-bold">Key publication</p>
+            <p><a href="https://www.biorxiv.org/content/10.1101/2025.04.26.650757v1" target="_blank">Gao, H.; Zhan, Y.; Liu, Y.; Zhu, Z.; Zheng, Y.; Qian, L.; Xue, Z.; Cheng, H.; Nie, Z.; Ge, W.; et al. Systematic evaluation of blood contamination in nanoparticle-based plasma proteomics. bioRxiv 2025, 2025.2004.2026.650757. DOI: 10.1101/2025.04.26.650757.</a></p>
 
         </div>
     </div>
@@ -274,6 +280,24 @@
         var isRbcChecked = rbcCheckbox.checked;
         var coagulationCheckbox = document.getElementById("coagulation");
         var isCoagulationChecked = coagulationCheckbox.checked;
+
+        if(sampleFileName == 'No file selected'){
+            alert('Please upload the sample info file.')
+            return
+        }
+        if(proteinFileName == 'No file selected'){
+            alert('Please upload the protein matrix info file.')
+            return
+        }
+        if(!isPlateletChecked && !isRbcChecked && !isCoagulationChecked){
+            alert('Specify the contamination type')
+            return
+        }
+
+        if(uniprotIDColumnName == '' && geneColumnName == ''){
+            alert('Specify the column with UniProt IDs in the protein matrix')
+            return
+        }
 
         const formData = new FormData();
         formData.append('pageUUID', pageUUID);
