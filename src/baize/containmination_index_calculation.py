@@ -77,7 +77,7 @@ def plot_dataframe(df, outfile_prefix, title='', width=1, color="blue"):
                              markeredgecolor='green',
                              markeredgewidth=2,
                              linestyle='None',
-                             label='log10(predicted cell count per ul plasma sample)')
+                             label='lg[Predicted Cells/μL Plasma]')
         handles = [mean_line, text_legend]
         labels = [line.get_label() for line in handles]
     ax.legend(handles=handles, labels=labels, loc='best', frameon=True)
