@@ -203,12 +203,12 @@ def down_file():
 
 @baize_bp.route('/demosample', methods=['GET'])
 def demo_sample():
-    return send_file(os.path.join(demo_data_dir, 'wosp24266_sampleinfo.xlsx'), as_attachment=True)
+    return send_file(os.path.join(demo_data_dir, 'sampleinfo.xlsx'), as_attachment=True)
 
 
 @baize_bp.route('/demomatrix', methods=['GET'])
 def demo_matrix():
-    return send_file(os.path.join(demo_data_dir, 'wosp24266_pg_matrix.csv'), as_attachment=True)
+    return send_file(os.path.join(demo_data_dir, 'pg_matrix.csv'), as_attachment=True)
 
 
 def allowed_file(filename):
