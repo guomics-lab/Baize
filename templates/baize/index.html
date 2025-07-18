@@ -73,25 +73,9 @@
 
 <main class="w-full max-w-[1440px] px-8 py-12">
     <div class="bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
-        <h2 class="text-2xl font-medium text-gray-900 mb-8">Baize Plasma and Serum Contamination Assessment Tool (v2.0)</h2>
+        <h2 class="text-2xl font-medium text-gray-900 mb-8">Baize Plasma and Serum Contamination Assessment Tool (v3.0)</h2>
 
         <div class="space-y-6">
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Sample Information</label>
-                <div class="relative">
-                    <input type="file" accept=".xlsx,.csv,.tsv" class="file-input hidden" id="sampleFile">
-                    <div class="flex items-center">
-                        <button onclick="document.getElementById('sampleFile').click()" class="!rounded-button px-4 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap">
-                            <i class="fas fa-upload mr-2"></i>Select File
-                        </button>
-                        <span class="ml-3 text-sm text-gray-500" id="sampleFileName">No file selected</span>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
-                <a href="/Baize/demoSample" class="inline-block mt-1 text-sm text-[#0353a4] hover:underline">
-                    <i class="fas fa-download mr-1"></i>Download Example Files
-                </a>
-            </div>
 
             <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700">Protein Matrix </label>
@@ -105,39 +89,12 @@
                     </div>
                 </div>
                 <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
+                <p class="text-sm text-gray-500">UniProt ID and sample columns in protein matrix table are required.</p>
                 <a href="/Baize/demoMatrix" class="inline-block mt-1 text-sm text-[#0353a4] hover:underline">
                     <i class="fas fa-download mr-1"></i>Download Example Files
                 </a>
             </div>
 
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Contamination Type</label>
-                <div class="flex space-x-6">
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" value="platelet" id="platelet">
-                        <span class="text-sm text-gray-700">Platelet</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" value="rbc" id="rbc">
-                        <span class="text-sm text-gray-700">Erythrocyte</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" value="coagulation" id="coagulation">
-                        <span class="text-sm text-gray-700">Coagulation</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Column with UniProt IDs</label>
-                    <input id="UniprotIDColumnName" type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Column with UniProt IDs(Case sensitive)">
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Column with Gene Name (Optional)</label>
-                    <input id="GeneColumnName" type="text" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Column with gene name(Case sensitive)">
-                </div>
-            </div>
 
             <div class="pt-4">
                 <button class="w-full !rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap" id="startCalc">
@@ -207,36 +164,6 @@
 
     var pageUUID = generateUUID();
 
-    document.getElementById('sampleFile').addEventListener('change', function(e) {
-        document.getElementById('sampleFileName').textContent = 'File upload in progress'
-        const file = event.target.files[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('pageUUID', pageUUID);
-
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/Baize/uploadSample', true);
-            xhr.onload = function() {
-                if (this.status >= 200 && this.status < 300) {
-                    if(this.responseText == 'File successfully uploaded'){
-                        document.getElementById('sampleFileName').textContent = e.target.files[0]?.name
-                    }else {
-                        document.getElementById('sampleFileName').textContent = 'File upload failed'
-                    }
-                } else {
-                    console.error('Upload failed');
-                    alert('File upload failed');
-                }
-            };
-            xhr.onerror = function() {
-                console.error('Request failed');
-                alert('Request failed');
-            };
-            xhr.send(formData);
-        }
-    });
 
     document.getElementById('proteinFile').addEventListener('change', function(e) {
         const file = event.target.files[0];
@@ -269,45 +196,16 @@
 
     document.getElementById('startCalc').addEventListener('click', function(e) {
         var proteinFileName = document.getElementById('proteinFileName').textContent
-        var sampleFileName = document.getElementById('sampleFileName').textContent
 
-        var uniprotIDColumnName = document.getElementById('UniprotIDColumnName').value
-        var geneColumnName = document.getElementById('GeneColumnName').value
 
-        var plateletCheckbox = document.getElementById("platelet");
-        var isPlateletChecked = plateletCheckbox.checked;
-        var rbcCheckbox = document.getElementById("rbc");
-        var isRbcChecked = rbcCheckbox.checked;
-        var coagulationCheckbox = document.getElementById("coagulation");
-        var isCoagulationChecked = coagulationCheckbox.checked;
-
-        if(sampleFileName == 'No file selected'){
-            alert('Please upload the sample info file.')
-            return
-        }
         if(proteinFileName == 'No file selected'){
             alert('Please upload the protein matrix info file.')
-            return
-        }
-        if(!isPlateletChecked && !isRbcChecked && !isCoagulationChecked){
-            alert('Specify the contamination type')
-            return
-        }
-
-        if(uniprotIDColumnName == '' && geneColumnName == ''){
-            alert('Specify the column with UniProt IDs in the protein matrix')
             return
         }
 
         const formData = new FormData();
         formData.append('pageUUID', pageUUID);
         formData.append('proteinFileName', proteinFileName);
-        formData.append('sampleFileName', sampleFileName);
-        formData.append('uniprotIDColumnName', uniprotIDColumnName);
-        formData.append('geneColumnName', geneColumnName);
-        formData.append('isPlateletChecked', isPlateletChecked);
-        formData.append('isRbcChecked', isRbcChecked);
-        formData.append('isCoagulationChecked', isCoagulationChecked);
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/Baize/calc', true);
@@ -319,25 +217,20 @@
                 if (this.responseText == 'File calculation completed') {
                     document.getElementById('resultSection').classList.remove('hidden');
 
-                    if(isPlateletChecked){
-                        var plateletImgEl = document.getElementById('plateletImg')
-                        var plateletImgDivEl = document.getElementById('plateletImgDiv')
-                        plateletImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=platelet";
-                        plateletImgDivEl.classList.remove('hidden');
-                    }
-                    if(isRbcChecked){
+                    var plateletImgEl = document.getElementById('plateletImg')
+                    var plateletImgDivEl = document.getElementById('plateletImgDiv')
+                    plateletImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=platelet";
+                    plateletImgDivEl.classList.remove('hidden');
 
-                        var rbcImgEl = document.getElementById('rbcImg')
-                        var rbcImgDivEl = document.getElementById('rbcImgDiv')
-                        rbcImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=rbc";
-                        rbcImgDivEl.classList.remove('hidden');
-                    }
-                    if(isCoagulationChecked){
-                        var coagulationImgEl = document.getElementById('coagulationImg')
-                        var coagulationImgDivEl = document.getElementById('coagulationImgDiv')
-                        coagulationImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=coagulation";
-                        coagulationImgDivEl.classList.remove('hidden');
-                    }
+                    var rbcImgEl = document.getElementById('rbcImg')
+                    var rbcImgDivEl = document.getElementById('rbcImgDiv')
+                    rbcImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=rbc";
+                    rbcImgDivEl.classList.remove('hidden');
+
+                    var coagulationImgEl = document.getElementById('coagulationImg')
+                    var coagulationImgDivEl = document.getElementById('coagulationImgDiv')
+                    coagulationImgEl.src = "/Baize/img?pageUUID=" + pageUUID + "&imgType=coagulation";
+                    coagulationImgDivEl.classList.remove('hidden');
                 }else {
                     alert(this.responseText);
                 }

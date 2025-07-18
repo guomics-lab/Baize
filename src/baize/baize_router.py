@@ -112,38 +112,17 @@ def calc():
     try:
         pageUUID = request.form.get('pageUUID')
         proteinFileName = request.form.get('proteinFileName')
-        sampleFileName = request.form.get('sampleFileName')
-        uniprotIDColumnName = request.form.get('uniprotIDColumnName', '').strip()
-        geneColumnName = request.form.get('geneColumnName', '').strip()
-        isCoagulationChecked = request.form.get('isCoagulationChecked')
-        isRbcChecked = request.form.get('isRbcChecked')
-        isPlateletChecked = request.form.get('isPlateletChecked')
 
-        if not pageUUID or not proteinFileName or not sampleFileName:
+        if not pageUUID or not proteinFileName:
             return 'Parameter error'
 
         pageUUID = get_str_md5(pageUUID)
 
         each_base_save_dir = os.path.join(base_save_dir, pageUUID)
         pg_matrix = os.path.join(each_base_save_dir, 'ProteinFile_' + proteinFileName)
-        sampleinfo = os.path.join(each_base_save_dir, sampleFileName)
-
-        contaminationTypeList = []
-        if isCoagulationChecked == 'true':
-            contaminationTypeList.append('coagulation')
-        if isRbcChecked == 'true':
-            contaminationTypeList.append('rbc')
-        if isPlateletChecked == 'true':
-            contaminationTypeList.append('platelet')
-
-        if len(contaminationTypeList) == 0:
-            return 'Please select the type of contamination'
-
-        contaminationType = ','.join(contaminationTypeList)
 
         try:
-            containmination_index_calculation.main(each_base_save_dir, pg_matrix, sampleinfo, contaminationType,
-                                                   uniprotIDColumnName, geneColumnName)
+            containmination_index_calculation.main(each_base_save_dir, pg_matrix)
 
             return 'File calculation completed'
         except Exception as e:
