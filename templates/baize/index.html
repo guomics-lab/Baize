@@ -74,83 +74,105 @@
 <main class="w-full max-w-[1440px] px-8 py-12">
     <div class="bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
         <h2 class="text-2xl font-medium text-gray-900 mb-8">Baize Plasma and Serum Contamination Assessment Tool (v3.0)</h2>
-
-        <div class="space-y-6">
-
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Protein Matrix </label>
-                <div class="relative">
-                    <input type="file" accept=".xlsx,.csv,.tsv" class="file-input hidden" id="proteinFile">
-                    <div class="flex items-center">
-                        <button onclick="document.getElementById('proteinFile').click()" class="!rounded-button px-4 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap">
-                            <i class="fas fa-upload mr-2"></i>Select File
-                        </button>
-                        <span class="ml-3 text-sm text-gray-500" id="proteinFileName">No file selected</span>
-                    </div>
+        <section id="overview" class="mb-10">
+            <div class="flex flex-col md:flex-row items-center ">
+                <div class="md:w-2/3  md:mb-0">
+                    <h2 class="text-2xl font-bold mb-6">Overview</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        Baize, a web-based software tool for rapid evaluation of sample contamination in three critical dimensions: platelet contamination, erythrocyte lysis, and residual coagulation protein carryover. The algorithm calculates cell-type-specific contamination indices by normalizing the summed intensity of marker proteins against the total intensity of plasma proteome (Contamination Index = Marker Protein Intensities / Σ All Plasma Protein Intensities). Users can submit a protein matrix with a sample annotation table, and then Baize will output an evaluation of contamination for every plasma sample.
+                    </p>
                 </div>
-                <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
-                <p class="text-sm text-gray-500">UniProt ID and sample columns in protein matrix table are required.</p>
-                <a href="/Baize/demoMatrix" class="inline-block mt-1 text-sm text-[#0353a4] hover:underline">
-                    <i class="fas fa-download mr-1"></i>Download Example Files
-                </a>
-            </div>
-
-
-            <div class="pt-4">
-                <button class="w-full !rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap" id="startCalc">
-                    Run Analysis
-                </button>
-            </div>
-        </div>
-        <div class="mt-8 border-t pt-8 hidden" id="resultSection">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Analysis Summary</h3>
-            <div class="bg-gray-50 rounded-lg p-4">
-                <div class="space-y-6">
-                    <div class="bg-white rounded shadow-sm p-4 hidden" id="plateletImgDiv">
-                        Platelet contamination index
-                        <img id="plateletImg" src="" alt="" class="w-full h-auto object-contain">
-                    </div>
-                    <div class="bg-white rounded shadow-sm p-4 hidden" id="rbcImgDiv">
-                        Erythrocyte contamination index
-                        <img id="rbcImg" src="" alt="" class="w-full h-auto object-contain">
-                    </div>
-                    <div class="bg-white rounded shadow-sm p-4 hidden" id="coagulationImgDiv">
-                        Coagulation contamination index
-                        <img id="coagulationImg" src="" alt="" class="w-full h-auto object-contain">
-                    </div>
+                <div class="md:w-1/3">
+                    <img src="/static/baize/logo.jpg" alt="paoding logo" class="w-[90%] h-auto rounded-xl ">
                 </div>
-                <div class="mt-6">
-                    <button class="!rounded-button px-4 py-2 bg-primary text-white hover:bg-primary/90 whitespace-nowrap" id="downFileBtn">
-                        <i class="fas fa-download mr-2"></i>Download Full Report
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold mb-6">Software</h2>
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Protein Matrix </label>
+                    <div class="relative">
+                        <input type="file" accept=".xlsx,.csv,.tsv" class="file-input hidden" id="proteinFile">
+                        <div class="flex items-center">
+                            <button onclick="document.getElementById('proteinFile').click()" class="!rounded-button px-4 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                                <i class="fas fa-upload mr-2"></i>Select File
+                            </button>
+                            <span class="ml-3 text-sm text-gray-500" id="proteinFileName">No file selected</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500">Supported formats: TSV, CSV, XLSX</p>
+                    <p class="text-sm text-gray-500">UniProt ID and sample columns in protein matrix table are required.</p>
+                    <a href="/Baize/demoMatrix" class="inline-block mt-1 text-sm text-[#0353a4] hover:underline">
+                        <i class="fas fa-download mr-1"></i>Download Example Files
+                    </a>
+                </div>
+
+
+                <div class="pt-4">
+                    <button class="w-full !rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap" id="startCalc">
+                        Run Analysis
                     </button>
                 </div>
             </div>
-        </div>
+            <div class="mt-8 border-t pt-8 hidden" id="resultSection">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Analysis Summary</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="space-y-6">
+                        <div class="bg-white rounded shadow-sm p-4 hidden" id="plateletImgDiv">
+                            Platelet contamination index
+                            <img id="plateletImg" src="" alt="" class="w-full h-auto object-contain">
+                        </div>
+                        <div class="bg-white rounded shadow-sm p-4 hidden" id="rbcImgDiv">
+                            Erythrocyte contamination index
+                            <img id="rbcImg" src="" alt="" class="w-full h-auto object-contain">
+                        </div>
+                        <div class="bg-white rounded shadow-sm p-4 hidden" id="coagulationImgDiv">
+                            Coagulation contamination index
+                            <img id="coagulationImg" src="" alt="" class="w-full h-auto object-contain">
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button class="!rounded-button px-4 py-2 bg-primary text-white hover:bg-primary/90 whitespace-nowrap" id="downFileBtn">
+                            <i class="fas fa-download mr-2"></i>Download Full Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="mb-10">
+            <div class="flex flex-col md:flex-row items-center mb-12">
+                <div class="mb-8 md:mb-0">
+                    <h2 class="text-2xl font-bold mb-6">Offline Version Access</h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        The Baize software is now available as an open-source solution.
+                        To implement an offline version, download the latest release scripts and associated documentation
+                        from our official GitHub repository:
+                        <a href="https://github.com/guomics-lab/Baize" target="_blank" class="inline-block mt-1 text-[#0353a4] hover:underline">https://github.com/guomics-lab/Baize</a>
+                    </p>
+                    <div class="text-lg text-center pt-4">
+                        <a href="https://github.com/guomics-lab/Baize" target="_blank" class="!rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap cursor-pointer">
+                            View on Github
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <div class="flex flex-col md:flex-row items-center mb-12">
+                <div class="mb-8 md:mb-0">
+                    <h2 class="text-2xl font-bold mb-6">Key Publication</h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        <a href="https://www.biorxiv.org/content/10.1101/2025.04.26.650757v1" target="_blank">Gao, H.; Zhan, Y.; Liu, Y.; Zhu, Z.; Zheng, Y.; Qian, L.; Xue, Z.; Cheng, H.; Nie, Z.; Ge, W.; et al. Systematic evaluation of blood contamination in nanoparticle-based plasma proteomics. bioRxiv 2025, 2025.2004.2026.650757. DOI: 10.1101/2025.04.26.650757.</a>
+                    </p>
+
+                </div>
+            </div>
+        </section>
     </div>
 </main>
-
-<footer class="w-full bg-white border-t">
-    <div class="max-w-[1440px] mx-auto px-8 py-12">
-        <div class="max-w-3xl mx-auto text-left text-sm text-gray-500 space-y-2 py-6">
-            <p class="text-xl font-bold">Baize Offline Version Access</p>
-            <p>The Baize software is now available as an open-source solution.
-                To implement an offline version, download the latest release scripts and associated documentation
-                from our official GitHub repository:
-                <a href="https://github.com/guomics-lab/Baize" target="_blank" class="inline-block mt-1 text-sm text-[#0353a4] hover:underline">https://github.com/guomics-lab/Baize</a></p>
-            <div class="text-center pt-4">
-                <a href="https://github.com/guomics-lab/Baize" target="_blank" class="!rounded-button px-6 py-3 bg-[#0353a4] text-white hover:bg-[#0353a4]/90 whitespace-nowrap cursor-pointer">
-                    View on Github
-                </a>
-            </div>
-        </div>
-
-        <div class="max-w-3xl mx-auto text-left text-sm text-gray-500 space-y-2">
-            <p class="text-xl font-bold">Key publication</p>
-            <p><a href="https://www.biorxiv.org/content/10.1101/2025.04.26.650757v1" target="_blank">Gao, H.; Zhan, Y.; Liu, Y.; Zhu, Z.; Zheng, Y.; Qian, L.; Xue, Z.; Cheng, H.; Nie, Z.; Ge, W.; et al. Systematic evaluation of blood contamination in nanoparticle-based plasma proteomics. bioRxiv 2025, 2025.2004.2026.650757. DOI: 10.1101/2025.04.26.650757.</a></p>
-
-        </div>
-    </div>
-</footer>
 
 <script>
 
